@@ -1,5 +1,5 @@
 const DB_NAME = 'CalorieTrackerDB';
-const DB_VERSION = 2; // バージョンを上げる！
+const DB_VERSION = 3; // バージョンを上げる！
 const STORE_FOODS = 'foods';
 const STORE_DISHES = 'dishes'; // 新しく追加
 

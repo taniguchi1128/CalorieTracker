@@ -279,8 +279,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         if (ingredients.length === 0) {
-             alert('料理に使用する食材を1つ以上追加してください。');
-             return;
+            alert('料理に使用する食材を1つ以上追加してください。');
+            return;
         }
 
 
@@ -350,4 +350,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // アプリ起動時にすべての食材を取得しておく（料理フォームのselect用）
     // populateFoodSelects() が Promise を返すので await で待つ
     await populateFoodSelects();
+
+
+
+
+    // アプリリロードボタンのイベントリスナー (新規追加)
+    const reloadAppButton = document.getElementById('reload-app-button');
+    if (reloadAppButton) {
+        reloadAppButton.addEventListener('click', () => {
+            if (confirm('アプリを最新バージョンに更新しますか？\n（現在入力中のデータは保存されません）')) {
+                // ページを強制的にリロード
+                location.reload(true); // true を渡すと、ブラウザキャッシュを無視して再読み込みを試みます
+                // ただし、Service Workerのキャッシュを直接クリアするわけではありません。
+            }
+        });
+    }
 });

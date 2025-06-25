@@ -1,6 +1,6 @@
 {
-  "name": "カロリー管理PWA",
-  "short_name": "カロリー",
+  "name": "CalorieTracker",
+  "short_name": "CalorieTracker",
   "description": "自分専用のカロリー・PFC管理アプリ",
   "start_url": "./",
   "display": "standalone",
