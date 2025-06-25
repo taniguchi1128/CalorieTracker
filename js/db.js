@@ -1,12 +1,12 @@
 const DB_NAME = 'CalorieTrackerDB';
-const DB_VERSION = 3; // バージョンを上げる！
+const DB_VERSION = 3; // バージョンは据え置き (データ構造変更がないため)
 const STORE_FOODS = 'foods';
-const STORE_DISHES = 'dishes'; // 新しく追加
+const STORE_DISHES = 'dishes';
 
 let db;
 
 /**
- * IndexedDBをオープンまたは作成する
+ * IndexedDBをオープンまたは作成する (既存)
  */
 function openDB() {
     return new Promise((resolve, reject) => {
@@ -14,17 +14,18 @@ function openDB() {
 
         request.onupgradeneeded = (event) => {
             db = event.target.result;
-            // 食材ストアの作成 (既存)
             if (!db.objectStoreNames.contains(STORE_FOODS)) {
                 db.createObjectStore(STORE_FOODS, { keyPath: 'id', autoIncrement: true });
                 console.log(`Object store '${STORE_FOODS}' created.`);
             }
-            // 料理ストアの作成 (新規)
             if (!db.objectStoreNames.contains(STORE_DISHES)) {
                 db.createObjectStore(STORE_DISHES, { keyPath: 'id', autoIncrement: true });
                 console.log(`Object store '${STORE_DISHES}' created.`);
             }
-            // 他のオブジェクトストア (食事記録) もここに追加
+            // データ移行ロジックは必要に応じてここに
+            if (event.oldVersion < 3) {
+                 console.log("Database upgraded to version 3.");
+            }
         };
 
         request.onsuccess = (event) => {
@@ -42,7 +43,6 @@ function openDB() {
 
 /**
  * 食材を保存する (既存)
- * @param {object} food - 保存する食材データ
  */
 async function addFood(food) {
     if (!db) await openDB();
@@ -50,16 +50,8 @@ async function addFood(food) {
         const transaction = db.transaction([STORE_FOODS], 'readwrite');
         const store = transaction.objectStore(STORE_FOODS);
         const request = store.add(food);
-
-        request.onsuccess = () => {
-            console.log('Food added:', food);
-            resolve(request.result);
-        };
-
-        request.onerror = (event) => {
-            console.error('Error adding food:', event.target.error);
-            reject(event.target.error);
-        };
+        request.onsuccess = () => { resolve(request.result); };
+        request.onerror = (event) => { reject(event.target.error); };
     });
 }
 
@@ -72,23 +64,13 @@ async function getAllFoods() {
         const transaction = db.transaction([STORE_FOODS], 'readonly');
         const store = transaction.objectStore(STORE_FOODS);
         const request = store.getAll();
-
-        request.onsuccess = () => {
-            console.log('All foods retrieved:', request.result);
-            resolve(request.result);
-        };
-
-        request.onerror = (event) => {
-            console.error('Error getting all foods:', event.target.error);
-            reject(event.target.error);
-        };
+        request.onsuccess = () => { resolve(request.result); };
+        request.onerror = (event) => { reject(event.target.error); };
     });
 }
 
 /**
- * 特定のIDの食材を取得する (新規追加)
- * 料理のPFC計算時に必要
- * @param {number} id - 食材のID
+ * 特定のIDの食材を取得する (既存)
  */
 async function getFoodById(id) {
     if (!db) await openDB();
@@ -96,22 +78,13 @@ async function getFoodById(id) {
         const transaction = db.transaction([STORE_FOODS], 'readonly');
         const store = transaction.objectStore(STORE_FOODS);
         const request = store.get(id);
-
-        request.onsuccess = () => {
-            resolve(request.result);
-        };
-
-        request.onerror = (event) => {
-            console.error(`Error getting food with ID ${id}:`, event.target.error);
-            reject(event.target.error);
-        };
+        request.onsuccess = () => { resolve(request.result); };
+        request.onerror = (event) => { reject(event.target.error); };
     });
 }
 
-
 /**
- * 料理を保存する (新規追加)
- * @param {object} dish - 保存する料理データ
+ * 料理を保存する (既存)
  */
 async function addDish(dish) {
     if (!db) await openDB();
@@ -119,21 +92,13 @@ async function addDish(dish) {
         const transaction = db.transaction([STORE_DISHES], 'readwrite');
         const store = transaction.objectStore(STORE_DISHES);
         const request = store.add(dish);
-
-        request.onsuccess = () => {
-            console.log('Dish added:', dish);
-            resolve(request.result);
-        };
-
-        request.onerror = (event) => {
-            console.error('Error adding dish:', event.target.error);
-            reject(event.target.error);
-        };
+        request.onsuccess = () => { resolve(request.result); };
+        request.onerror = (event) => { reject(event.target.error); };
     });
 }
 
 /**
- * すべての料理を取得する (新規追加)
+ * すべての料理を取得する (既存)
  */
 async function getAllDishes() {
     if (!db) await openDB();
@@ -141,14 +106,30 @@ async function getAllDishes() {
         const transaction = db.transaction([STORE_DISHES], 'readonly');
         const store = transaction.objectStore(STORE_DISHES);
         const request = store.getAll();
+        request.onsuccess = () => { resolve(request.result); };
+        request.onerror = (event) => { reject(event.target.error); };
+    });
+}
+
+/**
+ * 指定されたオブジェクトストアから指定されたIDのアイテムを削除する (新規追加)
+ * @param {string} storeName - オブジェクトストアの名前 (例: 'foods', 'dishes')
+ * @param {number} id - 削除するアイテムのID
+ */
+async function deleteItem(storeName, id) {
+    if (!db) await openDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
+        const store = transaction.objectStore(storeName);
+        const request = store.delete(id); // deleteメソッドで削除
 
         request.onsuccess = () => {
-            console.log('All dishes retrieved:', request.result);
-            resolve(request.result);
+            console.log(`Item with ID ${id} deleted from ${storeName}`);
+            resolve();
         };
 
         request.onerror = (event) => {
-            console.error('Error getting all dishes:', event.target.error);
+            console.error(`Error deleting item with ID ${id} from ${storeName}:`, event.target.error);
             reject(event.target.error);
         };
     });
@@ -159,7 +140,8 @@ window.dbManager = {
     openDB,
     addFood,
     getAllFoods,
-    getFoodById, // 追加
-    addDish,     // 追加
-    getAllDishes // 追加
+    getFoodById,
+    addDish,
+    getAllDishes,
+    deleteItem // 追加
 };

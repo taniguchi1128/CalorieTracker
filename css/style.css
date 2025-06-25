@@ -181,3 +181,20 @@ ul li span {
     border: 1px solid #c8e6c9;
     border-radius: 5px;
 }
+
+
+.delete-btn {
+    flex-shrink: 0; /* 縮小されないようにする */
+    padding: 5px 10px;
+    margin-left: 10px; /* テキストとの間に隙間 */
+    font-size: 0.8em;
+    color: white;
+    cursor: pointer;
+    background-color: #9E9E9E; /* グレー系の色 */
+    border: none;
+    border-radius: 4px;
+}
+
+.delete-btn:hover {
+    background-color: #757575;
+}

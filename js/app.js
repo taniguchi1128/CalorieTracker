@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // IndexedDBを初期化
     await window.dbManager.openDB();
     displayFoods();
-    displayDishes(); // 料理リストの初期表示を追加
+    displayDishes();
 
     // ----------------------------------------------------
-    // 食材登録フォームの処理 (既存、変更なし)
+    // 食材登録フォームの処理 (既存)
     // ----------------------------------------------------
     const foodForm = document.getElementById('food-form');
     foodForm.addEventListener('submit', async (event) => {
@@ -47,8 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('食材が登録されました！');
             foodForm.reset();
             displayFoods();
-            // 料理フォームの食材選択肢も更新が必要なため、再描画
-            populateFoodSelects();
+            populateFoodSelects(); // 料理フォームの食材選択肢も更新
         } catch (error) {
             console.error('食材の保存に失敗しました:', error);
             alert('食材の保存中にエラーが発生しました。');
@@ -56,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     /**
-     * 登録済みの食材をHTMLリストに表示する関数 (既存、変更なし)
+     * 登録済みの食材をHTMLリストに表示する関数 (変更あり)
      */
     async function displayFoods() {
         const foodsListUl = document.getElementById('registered-foods-ul');
@@ -74,9 +72,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 li.innerHTML = `
                     <span>${food.name}</span>
                     <span>Kcal: ${food.calorie_per_reference}kcal P: ${food.pfc_per_reference.protein}g F: ${food.pfc_per_reference.fat}g C: ${food.pfc_per_reference.carb}g (${food.reference.amount}${food.reference.unit}あたり)</span>
+                    <button class="delete-btn" data-id="${food.id}" data-type="food">削除</button>
                 `;
                 foodsListUl.appendChild(li);
             });
+            // 削除ボタンのイベントリスナーを設定
+            attachDeleteListeners('food');
         } catch (error) {
             console.error('食材の取得に失敗しました:', error);
             foodsListUl.innerHTML = '<li>食材の読み込み中にエラーが発生しました。</li>';
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ----------------------------------------------------
-    // 料理登録フォームの処理 (新規追加)
+    // 料理登録フォームの処理 (既存)
     // ----------------------------------------------------
     const dishForm = document.getElementById('dish-form');
     const addIngredientBtn = document.getElementById('add-ingredient-btn');
@@ -94,36 +95,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dishTotalFatSpan = document.getElementById('dish-total-fat');
     const dishTotalCarbSpan = document.getElementById('dish-total-carb');
 
-    let availableFoods = []; // 登録済みの食材リストを保持
+    let availableFoods = [];
 
-    // ページロード時と食材登録時に食材選択肢を更新
     await populateFoodSelects(); // 初期ロード時に呼び出す
 
-    /**
-     * 食材選択のプルダウンを生成・更新する関数
-     */
     async function populateFoodSelects() {
         availableFoods = await window.dbManager.getAllFoods();
-        // 既存の食材選択プルダウンを更新するために、すべての食材エントリを再描画
-        // または、既存のものを一度削除して再作成するロジックが必要
-        // 現時点では、addIngredientEntry 関数内で毎回最新のリストを取得する
-        // または、ここに一度全てのselect要素を取得してoptionをクリア＆追加するロジックを実装する
-        // 簡単のために、新しい食材が追加されたら、料理フォーム全体をリセットしてaddIngredientEntry()を呼び直す戦略もアリ
-        // 今回はシンプルに、addIngredientEntryで毎回新しいselectを作るので、ここでは特に何もしない（既存のselectは更新されない）
-        // 実際には、既存の<select>要素を探し、その中の<option>要素を更新する必要があります。
-        // デモのため、今回は新しい食材を追加したら、手動で料理フォームを一度リロードすることを想定。
-        // より良い実装は後述します。
+        // ここで既存の食材選択プルダウンを更新する必要がある場合がある
+        // 現在は addIngredientEntry が毎回optionを再生成するので、ここでは何もしない
+        // もし動的に追加された select も含めて更新したい場合は、
+        // document.querySelectorAll('.ingredient-select') で取得してループ処理を行う
     }
 
-
-    /**
-     * 新しい食材入力行を料理フォームに追加する関数
-     */
     function addIngredientEntry(foodId = '', amount = '') {
         const div = document.createElement('div');
         div.classList.add('ingredient-entry');
 
-        // 食材選択プルダウンの生成
         const select = document.createElement('select');
         select.classList.add('ingredient-select');
         select.required = true;
@@ -135,29 +122,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         availableFoods.forEach(food => {
             const option = document.createElement('option');
-            option.value = food.id; // IndexedDBのIDをvalueにする
+            option.value = food.id;
             option.textContent = food.name;
-            if (food.id === foodId) { // 既存のデータがあれば選択状態にする
+            if (food.id === foodId) {
                 option.selected = true;
             }
             select.appendChild(option);
         });
 
-        // 量の入力フィールド
         const amountInput = document.createElement('input');
         amountInput.type = 'number';
         amountInput.classList.add('ingredient-amount');
         amountInput.placeholder = '量';
         amountInput.step = '0.1';
         amountInput.required = true;
-        amountInput.value = amount; // 既存のデータがあれば値をセット
+        amountInput.value = amount;
 
-        // 単位表示要素
         const unitSpan = document.createElement('span');
         unitSpan.classList.add('unit-display');
-        unitSpan.textContent = ''; // 初期値は空
+        unitSpan.textContent = '';
 
-        // 食材選択が変更されたら単位表示を更新し、PFC計算をトリガー
         select.addEventListener('change', async () => {
             const selectedFoodId = parseInt(select.value);
             const selectedFood = availableFoods.find(f => f.id === selectedFoodId);
@@ -169,16 +153,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             calculateDishTotals();
         });
 
-        // 量が変更されたらPFC計算をトリガー
         amountInput.addEventListener('input', calculateDishTotals);
 
-        // 削除ボタン
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.textContent = '削除';
         removeButton.addEventListener('click', () => {
-            div.remove(); // 親要素ごと削除
-            calculateDishTotals(); // 削除後にも再計算
+            div.remove();
+            calculateDishTotals();
         });
 
         div.appendChild(select);
@@ -187,7 +169,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         div.appendChild(removeButton);
         ingredientsContainer.appendChild(div);
 
-        // 初期選択があれば単位表示を更新
         if (foodId) {
             const selectedFood = availableFoods.find(f => f.id === foodId);
             if (selectedFood) {
@@ -196,12 +177,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 「食材を追加」ボタンのクリックイベント
     addIngredientBtn.addEventListener('click', () => addIngredientEntry());
 
-    /**
-     * 料理の合計PFCとカロリーを計算し、表示を更新する
-     */
     async function calculateDishTotals() {
         let totalCalorie = 0;
         let totalProtein = 0;
@@ -225,7 +202,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const pfc = selectedFood.pfc_per_reference;
                     const calorie = selectedFood.calorie_per_reference;
 
-                    // 基準量あたりから使用量あたりのPFC・カロリーを計算
                     const ratio = amount / refAmount;
 
                     totalCalorie += calorie * ratio;
@@ -242,7 +218,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         dishTotalCarbSpan.textContent = totalCarb.toFixed(1);
     }
 
-    // 料理フォームの送信イベント
     dishForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -279,21 +254,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         if (ingredients.length === 0) {
-            alert('料理に使用する食材を1つ以上追加してください。');
-            return;
+             alert('料理に使用する食材を1つ以上追加してください。');
+             return;
         }
 
-
-        // 計算済みの合計値をそのまま保存
         const totalCalorie = parseFloat(dishTotalCalorieSpan.textContent);
         const totalProtein = parseFloat(dishTotalProteinSpan.textContent);
         const totalFat = parseFloat(dishTotalFatSpan.textContent);
         const totalCarb = parseFloat(dishTotalCarbSpan.textContent);
 
-
         const newDish = {
             name: dishName,
-            ingredients: ingredients, // 使用した食材のIDと量
+            ingredients: ingredients,
             total_pfc: {
                 protein: totalProtein,
                 fat: totalFat,
@@ -306,10 +278,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             await window.dbManager.addDish(newDish);
             alert('料理が登録されました！');
             dishForm.reset();
-            ingredientsContainer.innerHTML = ''; // 食材リストをクリア
-            addIngredientEntry(); // 初期状態で1行追加
-            calculateDishTotals(); // 合計表示をリセット
-            displayDishes(); // 料理リストを更新
+            ingredientsContainer.innerHTML = '';
+            addIngredientEntry();
+            calculateDishTotals();
+            displayDishes();
         } catch (error) {
             console.error('料理の保存に失敗しました:', error);
             alert('料理の保存中にエラーが発生しました。');
@@ -317,7 +289,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     /**
-     * 登録済みの料理をHTMLリストに表示する関数 (新規追加)
+     * 登録済みの料理をHTMLリストに表示する関数 (変更あり)
      */
     async function displayDishes() {
         const dishesListUl = document.getElementById('registered-dishes-ul');
@@ -335,33 +307,78 @@ document.addEventListener('DOMContentLoaded', async () => {
                 li.innerHTML = `
                     <span>${dish.name}</span>
                     <span>Kcal: ${dish.total_calorie}kcal P: ${dish.total_pfc.protein}g F: ${dish.total_pfc.fat}g C: ${dish.total_pfc.carb}g</span>
+                    <button class="delete-btn" data-id="${dish.id}" data-type="dish">削除</button>
                 `;
                 dishesListUl.appendChild(li);
             });
+            // 削除ボタンのイベントリスナーを設定
+            attachDeleteListeners('dish');
         } catch (error) {
             console.error('料理の取得に失敗しました:', error);
             dishesListUl.innerHTML = '<li>料理の読み込み中にエラーが発生しました。</li>';
         }
     }
 
+    // ----------------------------------------------------
+    // 削除機能の共通ロジック (新規追加)
+    // ----------------------------------------------------
+    /**
+     * 指定されたタイプの削除ボタンにイベントリスナーを設定する
+     * イベントデリゲーションを使用して、動的に追加される要素にも対応
+     * @param {string} type - 'food' または 'dish'
+     */
+    function attachDeleteListeners(type) {
+        const listUl = type === 'food' ? document.getElementById('registered-foods-ul') : document.getElementById('registered-dishes-ul');
+
+        // イベントデリゲーション: 親要素にイベントリスナーを設定し、子要素からのイベントを捕捉
+        listUl.addEventListener('click', async (event) => {
+            // クリックされた要素が削除ボタン（.delete-btn）かどうかを確認
+            if (event.target.classList.contains('delete-btn')) {
+                const itemId = parseInt(event.target.dataset.id); // data-idからIDを取得
+                const itemType = event.target.dataset.type; // data-typeからタイプを取得
+
+                if (confirm(`${itemType === 'food' ? '食材' : '料理'}「${event.target.previousElementSibling.previousElementSibling.textContent}」を削除しますか？\nこの操作は元に戻せません。`)) {
+                    try {
+                        let storeName = '';
+                        let refreshFunction;
+
+                        if (itemType === 'food') {
+                            storeName = 'foods';
+                            refreshFunction = displayFoods;
+                        } else if (itemType === 'dish') {
+                            storeName = 'dishes';
+                            refreshFunction = displayDishes;
+                        }
+
+                        if (storeName) {
+                            await window.dbManager.deleteItem(storeName, itemId);
+                            alert(`${itemType === 'food' ? '食材' : '料理'}が削除されました。`);
+                            refreshFunction(); // リストを再表示して更新
+                            if (itemType === 'food') {
+                                populateFoodSelects(); // 食材が削除されたら料理フォームの選択肢も更新
+                            }
+                        }
+                    } catch (error) {
+                        console.error('削除に失敗しました:', error);
+                        alert('削除中にエラーが発生しました。');
+                    }
+                }
+            }
+        });
+    }
+
     // 初期ロード時に、料理登録フォームに最初の食材入力行を追加
     addIngredientEntry();
 
     // アプリ起動時にすべての食材を取得しておく（料理フォームのselect用）
-    // populateFoodSelects() が Promise を返すので await で待つ
     await populateFoodSelects();
 
-
-
-
-    // アプリリロードボタンのイベントリスナー (新規追加)
+    // アプリリロードボタンのイベントリスナー (既存)
     const reloadAppButton = document.getElementById('reload-app-button');
     if (reloadAppButton) {
         reloadAppButton.addEventListener('click', () => {
             if (confirm('アプリを最新バージョンに更新しますか？\n（現在入力中のデータは保存されません）')) {
-                // ページを強制的にリロード
-                location.reload(true); // true を渡すと、ブラウザキャッシュを無視して再読み込みを試みます
-                // ただし、Service Workerのキャッシュを直接クリアするわけではありません。
+                location.reload(true);
             }
         });
     }
