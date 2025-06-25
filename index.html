@@ -1,87 +1,71 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>カロリー管理PWA</title>
-        <link rel="stylesheet" href="css/style.css" />
-        <link rel="manifest" href="manifest.json" />
-    </head>
-    <body>
-        <header>
-            <h1>カロリー管理アプリ</h1>
-        </header>
 
-        <main>
-            <section id="register-food">
-                <h2>食材登録</h2>
-                <form id="food-form">
-                    <label for="food-name">食材名:</label>
-                    <input type="text" id="food-name" required /><br />
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>カロリー管理PWA</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.json" />
+</head>
 
-                    <label for="food-pfc-per-100g">PFC値 (100gあたり):</label
-                    ><br />
-                    <input
-                        type="number"
-                        id="food-protein"
-                        placeholder="タンパク質(g)"
-                        step="0.1"
-                        required
-                    />
-                    <input
-                        type="number"
-                        id="food-fat"
-                        placeholder="脂質(g)"
-                        step="0.1"
-                        required
-                    />
-                    <input
-                        type="number"
-                        id="food-carb"
-                        placeholder="炭水化物(g)"
-                        step="0.1"
-                        required
-                    /><br />
+<body>
+    <header>
+        <h1>CalorieTracker</h1>
+    </header>
 
-                    <button type="submit">食材を保存</button>
-                </form>
-                <div id="food-list">
-                    <h3>登録済みの食材</h3>
-                    <ul id="registered-foods-ul"></ul>
-                </div>
-            </section>
-        </main>
+    <main>
+        <section id="register-food">
+            <h2>食材登録</h2>
+            <form id="food-form">
+                <label for="food-name">食材名:</label>
+                <input type="text" id="food-name" required /><br />
 
-        <script src="js/db.js"></script>
-        <script src="js/app.js"></script>
-        <script>
-            // Service Workerの登録
-            if ("serviceWorker" in navigator) {
-                window.addEventListener("load", () => {
-                    navigator.serviceWorker
-                        .register("service-worker.js")
-                        .then((registration) => {
-                            console.log(
-                                "Service Worker registered:",
-                                registration
-                            );
-                        })
-                        .catch((error) => {
-                            console.error(
-                                "Service Worker registration failed:",
-                                error
-                            );
-                        });
-                });
-            }
-        </script>
-        <script>
-            if (location.href.includes("debug=true")) {
-                var script = document.createElement("script");
-                script.src = "https://cdn.jsdelivr.net/npm/eruda";
-                script.onload = () => eruda.init();
-                document.body.appendChild(script);
-            }
-        </script>
-    </body>
+                <label for="food-pfc-per-100g">PFC値 (100gあたり):</label><br />
+                <input type="number" id="food-protein" placeholder="タンパク質(g)" step="0.1" required />
+                <input type="number" id="food-fat" placeholder="脂質(g)" step="0.1" required />
+                <input type="number" id="food-carb" placeholder="炭水化物(g)" step="0.1" required /><br />
+
+                <button type="submit">食材を保存</button>
+            </form>
+            <div id="food-list">
+                <h3>登録済みの食材</h3>
+                <ul id="registered-foods-ul"></ul>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Service Workerの登録
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker
+                    .register("service-worker.js")
+                    .then((registration) => {
+                        console.log(
+                            "Service Worker registered:",
+                            registration
+                        );
+                    })
+                    .catch((error) => {
+                        console.error(
+                            "Service Worker registration failed:",
+                            error
+                        );
+                    });
+            });
+        }
+    </script>
+    <script>
+        if (location.href.includes("debug=true")) {
+            var script = document.createElement("script");
+            script.src = "https://cdn.jsdelivr.net/npm/eruda";
+            script.onload = () => eruda.init();
+            document.body.appendChild(script);
+        }
+    </script>
+</body>
+
 </html>
