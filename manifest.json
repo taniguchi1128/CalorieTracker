@@ -5,7 +5,7 @@
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
+  "theme_color": "#1c1e2a",
   "icons": [
     {
       "src": "images/dining_icon-192x192.png",
