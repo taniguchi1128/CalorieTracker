@@ -19,10 +19,10 @@
             <h2>食材登録</h2>
             <form id="food-form">
                 <label for="food-name">食材名:</label>
-                <input type="text" id="food-name" required /><br />
+                <input type="text" id="food-name" required />
+                <!-- <br /> -->
 
                 <label for="food-reference-amount">基準量:</label>
-
                 <div class="reference-amount-group">
                     <input type="number" id="food-reference-amount" placeholder="例: 100" step="1" required />
                     <select id="food-reference-unit">
@@ -34,15 +34,19 @@
                         <option value="パック">パック</option>
                     </select>
                 </div>
-                <br />
+                <!-- <br /> -->
 
-                <label for="food-pfc-per-ref">PFC値 (基準量あたり):</label><br />
+                <label for="food-calorie">カロリー (基準量あたり):</label>
+                <input type="number" id="food-calorie" placeholder="カロリー(kcal)" step="0.1" required />
+                <!-- <br /> -->
+
+                <label for="food-pfc-per-ref">PFC値 (基準量あたり):</label>
                 <div class="pfc-inputs">
                     <input type="number" id="food-protein" placeholder="タンパク質" step="0.1" required />
                     <input type="number" id="food-fat" placeholder="脂質" step="0.1" required />
                     <input type="number" id="food-carb" placeholder="炭水化物" step="0.1" required />
                 </div>
-                <br />
+                <!-- <br /> -->
 
                 <button type="submit">食材を保存</button>
             </form>
@@ -51,6 +55,36 @@
                 <ul id="registered-foods-ul"></ul>
             </div>
         </section>
+
+        <section id="register-dish">
+            <h2>料理登録</h2>
+            <form id="dish-form">
+                <label for="dish-name">料理名:</label>
+                <input type="text" id="dish-name" required /><br />
+
+                <h3>使用食材</h3>
+                <div id="dish-ingredients-container">
+                </div>
+                <button type="button" id="add-ingredient-btn">食材を追加</button>
+                <br /><br />
+
+                <div id="dish-total-pfc-calorie">
+                    総PFC・カロリー: <span id="dish-total-calorie">0</span>kcal /
+                    P: <span id="dish-total-protein">0</span>g /
+                    F: <span id="dish-total-fat">0</span>g /
+                    C: <span id="dish-total-carb">0</span>g
+                </div>
+                <br />
+
+                <button type="submit">料理を保存</button>
+            </form>
+            <div id="dish-list">
+                <h3>登録済みの料理</h3>
+                <ul id="registered-dishes-ul">
+                </ul>
+            </div>
+        </section>
+
     </main>
 
     <script src="js/db.js"></script>

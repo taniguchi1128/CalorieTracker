@@ -53,9 +53,9 @@ form input[type="number"],
 form input[type="password"],
 form input[type="email"],
 form textarea,
-form select { /* select要素も追加 */
+form select {
     box-sizing: border-box;
-    width: 100%; /* 基本は100%に設定 */
+    width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     font-size: 16px;
@@ -67,24 +67,24 @@ form select { /* select要素も追加 */
 .reference-amount-group {
     display: flex;
     gap: 10px; /* 要素間の隙間 */
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .reference-amount-group input[type="number"] {
     flex: 2; /* 量の入力欄は少し広めに */
-    margin-bottom: 0; /* 親のFlexコンテナでgapを設定するので不要 */
+    /* margin-bottom: 0; */
 }
 
 .reference-amount-group select {
     flex: 1; /* 単位選択は少し狭めに */
-    margin-bottom: 0; /* 親のFlexコンテナでgapを設定するので不要 */
+    /* margin-bottom: 0; */
 }
 
 .pfc-inputs {
     display: flex;
     gap: 10px;
     justify-content: space-between;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .pfc-inputs input[type="number"] {
@@ -94,7 +94,9 @@ form select { /* select要素も追加 */
 }
 
 form button {
+    width: 100%;
     padding: 10px 15px;
+    margin: 10px 0;
     font-size: 16px;
     color: white;
     cursor: pointer;
@@ -126,4 +128,56 @@ ul li {
 
 ul li span {
     font-weight: bold;
+}
+
+/* --- 料理登録関連の新しいスタイル --- */
+.ingredient-entry {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fcfcfc;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.ingredient-entry select {
+    flex: 3; /* 食材選択を広めに */
+    margin-bottom: 0;
+}
+
+.ingredient-entry input[type="number"] {
+    flex: 1.5; /* 量の入力欄 */
+    margin-bottom: 0;
+}
+
+.ingredient-entry .unit-display {
+    flex: 0.5; /* 単位表示 */
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+    white-space: nowrap; /* 折り返しを防ぐ */
+}
+
+.ingredient-entry button {
+    width: 60px; /* ボタンの最小幅を確保 */
+    padding: 5px 10px;
+    margin-left: auto; /* 右寄せ */
+    font-size: 0.9em;
+    background-color: #f44336; /* 赤色の削除ボタン */
+}
+
+.ingredient-entry button:hover {
+    background-color: #d32f2f;
+}
+
+#dish-total-pfc-calorie {
+    padding: 15px;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #2e7d32;
+    background-color: #e8f5e9; /* 薄い緑色の背景 */
+    border: 1px solid #c8e6c9;
+    border-radius: 5px;
 }

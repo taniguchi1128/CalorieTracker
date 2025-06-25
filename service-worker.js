@@ -1,15 +1,15 @@
-const CACHE_NAME = 'calorie-app-v2'; // キャッシュ名。バージョン管理に使う
+const CACHE_NAME = 'calorie-app-v4'; // キャッシュ名。バージョン管理に使う
 const urlsToCache = [
-  './', // index.html
+  './',
   './index.html',
   './manifest.json',
   './css/style.css',
   './js/app.js',
   './js/db.js',
   // './js/utils.js', // utils.jsも追加するならコメント解除
-  './images/dining_icon-192x192.png',
-  './images/dining_icon-512x512.png',
-  './images/dining_maskable_icon.png'
+  './images/icon-192x192.png',
+  './images/icon-512x512.png',
+  './images/maskable_icon.png'
 ];
 
 // インストールイベント: キャッシュにファイルを保存

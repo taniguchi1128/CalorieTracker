@@ -1,6 +1,7 @@
 const DB_NAME = 'CalorieTrackerDB';
-const DB_VERSION = 1;
-const STORE_FOODS = 'foods'; // 食材を保存するオブジェクトストア名
+const DB_VERSION = 2; // バージョンを上げる！
+const STORE_FOODS = 'foods';
+const STORE_DISHES = 'dishes'; // 新しく追加
 
 let db;
 
@@ -12,18 +13,18 @@ function openDB() {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onupgradeneeded = (event) => {
-            // データベースのバージョンが変更されたときに実行される
-            // （初回作成時やバージョンアップ時）
             db = event.target.result;
+            // 食材ストアの作成 (既存)
             if (!db.objectStoreNames.contains(STORE_FOODS)) {
-                // 'foods' オブジェクトストアを作成
-                // keyPath: オブジェクトの一意な識別子となるプロパティ名
                 db.createObjectStore(STORE_FOODS, { keyPath: 'id', autoIncrement: true });
                 console.log(`Object store '${STORE_FOODS}' created.`);
             }
-            // 他のオブジェクトストア (料理、食事記録) もここに追加
-            // if (!db.objectStoreNames.contains('dishes')) { ... }
-            // if (!db.objectStoreNames.contains('meals')) { ... }
+            // 料理ストアの作成 (新規)
+            if (!db.objectStoreNames.contains(STORE_DISHES)) {
+                db.createObjectStore(STORE_DISHES, { keyPath: 'id', autoIncrement: true });
+                console.log(`Object store '${STORE_DISHES}' created.`);
+            }
+            // 他のオブジェクトストア (食事記録) もここに追加
         };
 
         request.onsuccess = (event) => {
@@ -40,11 +41,11 @@ function openDB() {
 }
 
 /**
- * 食材を保存する
+ * 食材を保存する (既存)
  * @param {object} food - 保存する食材データ
  */
 async function addFood(food) {
-    if (!db) await openDB(); // DBがまだ開かれていなければ開く
+    if (!db) await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction([STORE_FOODS], 'readwrite');
         const store = transaction.objectStore(STORE_FOODS);
@@ -52,7 +53,7 @@ async function addFood(food) {
 
         request.onsuccess = () => {
             console.log('Food added:', food);
-            resolve(request.result); // 追加されたデータのキー（ID）を返す
+            resolve(request.result);
         };
 
         request.onerror = (event) => {
@@ -63,14 +64,14 @@ async function addFood(food) {
 }
 
 /**
- * すべての食材を取得する
+ * すべての食材を取得する (既存)
  */
 async function getAllFoods() {
     if (!db) await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction([STORE_FOODS], 'readonly');
         const store = transaction.objectStore(STORE_FOODS);
-        const request = store.getAll(); // 全てのデータを取得
+        const request = store.getAll();
 
         request.onsuccess = () => {
             console.log('All foods retrieved:', request.result);
@@ -84,12 +85,81 @@ async function getAllFoods() {
     });
 }
 
-// 他のCRUD操作（更新、削除）もここに追加していく
+/**
+ * 特定のIDの食材を取得する (新規追加)
+ * 料理のPFC計算時に必要
+ * @param {number} id - 食材のID
+ */
+async function getFoodById(id) {
+    if (!db) await openDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_FOODS], 'readonly');
+        const store = transaction.objectStore(STORE_FOODS);
+        const request = store.get(id);
 
-// グローバルスコープで利用できるようにエクスポート
-// app.jsからこれらの関数を呼び出すために必要
+        request.onsuccess = () => {
+            resolve(request.result);
+        };
+
+        request.onerror = (event) => {
+            console.error(`Error getting food with ID ${id}:`, event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
+
+/**
+ * 料理を保存する (新規追加)
+ * @param {object} dish - 保存する料理データ
+ */
+async function addDish(dish) {
+    if (!db) await openDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_DISHES], 'readwrite');
+        const store = transaction.objectStore(STORE_DISHES);
+        const request = store.add(dish);
+
+        request.onsuccess = () => {
+            console.log('Dish added:', dish);
+            resolve(request.result);
+        };
+
+        request.onerror = (event) => {
+            console.error('Error adding dish:', event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
+/**
+ * すべての料理を取得する (新規追加)
+ */
+async function getAllDishes() {
+    if (!db) await openDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_DISHES], 'readonly');
+        const store = transaction.objectStore(STORE_DISHES);
+        const request = store.getAll();
+
+        request.onsuccess = () => {
+            console.log('All dishes retrieved:', request.result);
+            resolve(request.result);
+        };
+
+        request.onerror = (event) => {
+            console.error('Error getting all dishes:', event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
+
 window.dbManager = {
     openDB,
     addFood,
-    getAllFoods
+    getAllFoods,
+    getFoodById, // 追加
+    addDish,     // 追加
+    getAllDishes // 追加
 };
