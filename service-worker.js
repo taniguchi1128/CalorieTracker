@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calorie-app-v2'; // キャッシュ名。バージョン管理に使う
+const CACHE_NAME = 'calorie-app-v1.1'; // キャッシュ名。バージョン管理に使う
 const urlsToCache = [
   './', // index.html
   './index.html',

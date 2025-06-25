@@ -22,9 +22,12 @@
                 <input type="text" id="food-name" required /><br />
 
                 <label for="food-pfc-per-100g">PFC値 (100gあたり):</label><br />
-                <input type="number" id="food-protein" placeholder="タンパク質(g)" step="0.1" required />
-                <input type="number" id="food-fat" placeholder="脂質(g)" step="0.1" required />
-                <input type="number" id="food-carb" placeholder="炭水化物(g)" step="0.1" required /><br />
+                <div class="pfc-inputs">
+                    <input type="number" id="food-protein" placeholder="タンパク質(g)" step="0.1" required />
+                    <input type="number" id="food-fat" placeholder="脂質(g)" step="0.1" required />
+                    <input type="number" id="food-carb" placeholder="炭水化物(g)" step="0.1" required />
+                </div>
+                <br />
 
                 <button type="submit">食材を保存</button>
             </form>

@@ -36,7 +36,9 @@ section:last-child {
     border-bottom: none;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     color: #fff;
 }
 
@@ -48,17 +50,24 @@ form label {
 
 form input[type="text"],
 form input[type="number"] {
-    width: calc(100% - 22px);
+    box-sizing: border-box;
+    width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
-form input[type="number"] {
-    display: inline-block;
-    width: calc(33% - 15px); /* PFC inputs for 3 columns */
-    margin-right: 5px;
+.pfc-inputs {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.pfc-inputs input[type="number"] {
+    flex: 1;
+    min-width: 0;
 }
 
 form button {
