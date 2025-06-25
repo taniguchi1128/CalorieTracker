@@ -50,6 +50,7 @@ form label {
 
 form input[type="text"],
 form input[type="number"],
+form input[type="date"],
 form input[type="password"],
 form input[type="email"],
 form textarea,
@@ -172,7 +173,8 @@ ul li span {
     background-color: #d32f2f;
 }
 
-#dish-total-pfc-calorie {
+#dish-total-pfc-calorie,
+#meal-total-pfc-calorie  {
     padding: 15px;
     margin-top: 20px;
     font-weight: bold;
@@ -197,4 +199,51 @@ ul li span {
 
 .delete-btn:hover {
     background-color: #757575;
+}
+
+/* --- 新規追加：食事記録関連のスタイル --- */
+.meal-item-entry { /* 食事記録フォーム内のアイテム入力行 */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fcfcfc;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.meal-item-entry .item-type-select { /* 食材/料理選択 */
+    flex: 3;
+    margin-bottom: 0;
+}
+
+.meal-item-entry input[type="number"] { /* 量入力 */
+    flex: 1.5;
+    margin-bottom: 0;
+}
+
+.meal-item-entry .unit-display { /* 単位表示 */
+    flex: 0.5;
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.meal-item-entry button { /* 食事アイテム削除ボタン */
+    width: 60px;
+    padding: 5px 10px;
+    margin-left: auto;
+    font-size: 0.9em;
+    background-color: #f44336;
+}
+
+.meal-item-entry button:hover {
+    background-color: #d32f2f;
+}
+
+#view-meal-date {
+    margin-top: 15px;
+    margin-bottom: 15px;
 }

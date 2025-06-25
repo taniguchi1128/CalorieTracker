@@ -84,6 +84,35 @@
                 </ul>
             </div>
         </section>
+        <section id="record-meal">
+            <h2>食事記録</h2>
+            <form id="meal-form">
+                <label for="meal-date">日付:</label>
+                <input type="date" id="meal-date" required /><br />
+
+                <h3>食べたもの</h3>
+                <div id="meal-items-container">
+                </div>
+                <button type="button" id="add-meal-item-btn">食材/料理を追加</button>
+                <br /><br />
+
+                <div id="meal-total-pfc-calorie">
+                    総PFC・カロリー: <span id="meal-total-calorie">0</span>kcal /
+                    P: <span id="meal-total-protein">0</span>g /
+                    F: <span id="meal-total-fat">0</span>g /
+                    C: <span id="meal-total-carb">0</span>g
+                </div>
+                <br />
+
+                <button type="submit">食事を記録</button>
+            </form>
+            <div id="meal-list">
+                <h3>記録された食事</h3>
+                <input type="date" id="view-meal-date" />
+                <ul id="registered-meals-ul">
+                </ul>
+            </div>
+        </section>
 
         <section id="app-settings">
             <h2>アプリ設定</h2>
