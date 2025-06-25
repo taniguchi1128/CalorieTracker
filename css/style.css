@@ -49,14 +49,35 @@ form label {
 }
 
 form input[type="text"],
-form input[type="number"] {
+form input[type="number"],
+form input[type="password"],
+form input[type="email"],
+form textarea,
+form select { /* select要素も追加 */
     box-sizing: border-box;
-    width: 100%;
+    width: 100%; /* 基本は100%に設定 */
     padding: 10px;
     margin-bottom: 10px;
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 4px;
+}
+
+/* 基準量入力と単位選択を囲むコンテナ */
+.reference-amount-group {
+    display: flex;
+    gap: 10px; /* 要素間の隙間 */
+    margin-bottom: 10px;
+}
+
+.reference-amount-group input[type="number"] {
+    flex: 2; /* 量の入力欄は少し広めに */
+    margin-bottom: 0; /* 親のFlexコンテナでgapを設定するので不要 */
+}
+
+.reference-amount-group select {
+    flex: 1; /* 単位選択は少し狭めに */
+    margin-bottom: 0; /* 親のFlexコンテナでgapを設定するので不要 */
 }
 
 .pfc-inputs {

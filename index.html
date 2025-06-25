@@ -21,11 +21,26 @@
                 <label for="food-name">食材名:</label>
                 <input type="text" id="food-name" required /><br />
 
-                <label for="food-pfc-per-100g">PFC値 (100gあたり):</label><br />
+                <label for="food-reference-amount">基準量:</label>
+
+                <div class="reference-amount-group">
+                    <input type="number" id="food-reference-amount" placeholder="例: 100" step="1" required />
+                    <select id="food-reference-unit">
+                        <option value="g">g</option>
+                        <option value="ml">ml</option>
+                        <option value="個">個</option>
+                        <option value="枚">枚</option>
+                        <option value="本">本</option>
+                        <option value="パック">パック</option>
+                    </select>
+                </div>
+                <br />
+
+                <label for="food-pfc-per-ref">PFC値 (基準量あたり):</label><br />
                 <div class="pfc-inputs">
-                    <input type="number" id="food-protein" placeholder="タンパク質(g)" step="0.1" required />
-                    <input type="number" id="food-fat" placeholder="脂質(g)" step="0.1" required />
-                    <input type="number" id="food-carb" placeholder="炭水化物(g)" step="0.1" required />
+                    <input type="number" id="food-protein" placeholder="タンパク質" step="0.1" required />
+                    <input type="number" id="food-fat" placeholder="脂質" step="0.1" required />
+                    <input type="number" id="food-carb" placeholder="炭水化物" step="0.1" required />
                 </div>
                 <br />
 
