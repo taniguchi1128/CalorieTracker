@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calorie-app-v2'; // キャッシュ名。サイトを更新するたびにこのバージョン番号を変更してください。
+const CACHE_NAME = 'calorie-app-v3'; // キャッシュ名。サイトを更新するたびにこのバージョン番号を変更してください。
 const urlsToCache = [ // 初回インストール時にキャッシュしたいファイルリスト
     './',
     './index.html',
@@ -6,9 +6,8 @@ const urlsToCache = [ // 初回インストール時にキャッシュしたい�
     './css/style.css',
     './js/app.js',
     './js/db.js',
-    // './images/icon-192x192.png',
-    // './images/icon-512x512.png',
-    // './images/maskable_icon.png'
+    './images/icon-192x192.png',
+    './images/icon-512x512.png',
 ];
 
 // インストールイベント: Service Workerが初めてインストールされるときに発生

@@ -8,20 +8,14 @@
   "theme_color": "#1c1e2a",
   "icons": [
     {
-      "src": "images/dining_icon-192x192.png",
+      "src": "images/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "images/dining_icon-512x512.png",
+      "src": "images/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "images/dining_maskable_icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
     }
   ],
   "orientation": "portrait"
