@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calorie-app-v1'; // キャッシュ名。サイトを更新するたびにこのバージョン番号を変更してください。
+const CACHE_NAME = 'calorie-app-v4'; // キャッシュ名。サイトを更新するたびにこのバージョン番号を変更してください。
 const urlsToCache = [ // 初回インストール時にキャッシュしたいファイルリスト
     './',
     './index.html',
