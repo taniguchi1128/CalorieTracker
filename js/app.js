@@ -1,6 +1,6 @@
 // Service WorkerのCACHE_NAMEと同期させるPWAのバージョン
 // Service Workerのキャッシュを更新する際は、この値も同時に更新してください
-const APP_VERSION = 'calorie-app-v1'; // ここを更新するたびにService WorkerのCACHE_NAMEも更新してください
+const APP_VERSION = 'calorie-app-v4'; // ここを更新するたびにService WorkerのCACHE_NAMEも更新してください
 
 
 document.addEventListener('DOMContentLoaded', async () => {
