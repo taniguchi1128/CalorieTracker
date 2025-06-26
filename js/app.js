@@ -1,3 +1,8 @@
+// Service WorkerのCACHE_NAMEと同期させるPWAのバージョン
+// Service Workerのキャッシュを更新する際は、この値も同時に更新してください
+const APP_VERSION = 'calorie-app-v1'; // ここを更新するたびにService WorkerのCACHE_NAMEも更新してください
+
+
 document.addEventListener('DOMContentLoaded', async () => {
     // IndexedDBを初期化
     await window.dbManager.openDB();
@@ -39,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // アプリ設定
     const reloadAppButton = document.getElementById('reload-app-button');
+    const appVersionSpan = document.getElementById('app-version');
 
     // --- グローバル変数と初期化関連の関数定義 ---
     let availableFoods = []; // 登録済みの食材リストを保持 (料理フォーム、食事記録フォーム用)
@@ -727,5 +733,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 location.reload(true);
             }
         });
+    }
+    
+    if (appVersionSpan) {
+        appVersionSpan.textContent = APP_VERSION;
     }
 });
